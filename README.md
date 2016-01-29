@@ -2,15 +2,18 @@ RallyEmailGateway
 =================
 README file for creating a Rally defect or story using a POP3 mail server
 
-Install Ruby 1.9.2 or modify script to work with your version of Ruby
-Install rubygems (from command line or terminal: gem install rubygems)
-Install mail (from command line or terminal: gem install mail)
-Install rally_rest_api (from command line or terminal: gem install rally_rest_api)
+Tested with Ruby 2.2.4
+Install gems:
+    gem install mail mime-types rally_api httpclient mime-types-data
 
 Create email account to be used to process all incoming Rally creation requests. For example, rallyrequest@domain.com.
 
 Setup the Ruby script on a server to run a service when an incoming mail is sent to the email account created above.
-The Ruby script will create defects for email subjects starting with 'defect'. Otherwise, a user story will be created.  
+For each email, the Ruby script will create an artifact of type:
+*   defect - email subjects starting with 'defect'
+*   story - email subjects starting with 'story' or 'userstory' or 'hierarchicalrequirement' or 'hierarchical_requirement'
+*   Otherwise, the email is ignored
+
 It will be created in the user's default Project/Workspace.
 
 Edit Ruby script with appropriate Rally settings and POP3 mail server settings.
