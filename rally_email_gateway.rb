@@ -75,105 +75,51 @@ rally = RallyAPI::RallyRestJson.new(config)
 # ------------------------------------------------------------------------------
 # Connect to mail server via POP3 
 #
-if 1 == 2
-    $mail_server     = 'sharklasers.com'
-    $mail_port       = '995'
-    $mail_username   = 'ndkebejt'
-    $mail_password   = ''
-    # Fails with:
-    # /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:1005:
-    #   in `check_response_auth':
-    #   -ERR invalid command (Net::POPAuthenticationError)
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:904:in `auth'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:566:in `do_start'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:536:in `start'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/pop3.rb:130:in `start'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/pop3.rb:61:in `find'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/base.rb:41:in `all'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/mail.rb:171:in `all'
-    # from ./rally_email_gateway.rb:136:in `<main>'
-end
-
-if 1 == 2
-    $mail_server     = 'pop.rallyemailgateway.mailinator.com'
-    $mail_server     = 'pop.mailinator.com'
-    $mail_port       = '995'
-    $mail_username   = 'rallyemailgateway'
-    $mail_password   = ''
-    # Fails with:
-    # /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:544:
-    #   in `initialize':
-    #   Connection refused - connect(2) for "pop.mailinator.com" port 995 (Errno::ECONNREFUSED)
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:544:in `open'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:544:in `block in do_start'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/timeout.rb:88:in `block in timeout'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/timeout.rb:98:in `call'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/timeout.rb:98:in `timeout'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:543:in `do_start'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:536:in `start'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/pop3.rb:130:in `start'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/pop3.rb:61:in `find'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/base.rb:41:in `all'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/mail.rb:171:in `all'
-    # from ./rally_email_gateway.rb:121:in `<main>'
-end
-
-if 1 == 2
-    $mail_server     = 'pop.gmail.com'
-    $mail_port       = '995'
-    $mail_username   = 'jpkole@gmail.com'
-    $mail_password   = 'xxxxxxxxxxxx'
-    # Fails with:
-    # /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:1005:
-    #   in `check_response_auth':
-    #   -ERR [AUTH] Web login required: https://support.google.com/mail/answer/78754 (Net::POPAuthenticationError)
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:904:in `auth'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:566:in `do_start'
-    # from /Users/jpkole/.rvm/rubies/ruby-2.2.4/lib/ruby/2.2.0/net/pop.rb:536:in `start'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/pop3.rb:130:in `start'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/pop3.rb:61:in `find'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/network/retriever_methods/base.rb:41:in `all'
-    # from /Users/jpkole/.rvm/gems/ruby-2.2.4@rally_email_gateway-ruby-2.2.4/gems/mail-2.6.3/lib/mail/mail.rb:171:in `all'
-    # from ./rally_email_gateway.rb:100:in `<main>'
-    # and then sent email to admin:
-    #   Someone just tried to sign in to your Google Account jpkole@gmail.com from an app that doesn't meet modern security standards.
-    #       Details:
-    #       Friday, January 29, 2016 12:44 PM (Mountain Standard Time)
-    #       Boulder, CO, USA*
-    #   We strongly recommend that you use a secure app, like Gmail, to access your account.
-    #   All apps made by Google meet these security standards.
-    #   Using a less secure app, on the other hand, could leave your account vulnerable. 
-end
-if 1 == 1
-    $mail_server     = 'pop.zoho.com'
-    $mail_port       = '995'
-    $mail_username   = 'jpkole'
-    $mail_password   = '689tgDR!!'
-end
-
 print "Connecting to POP3 email with:\n"
 print "\taddress   : <#{$mail_server}>\n"
 print "\tport      : <#{$mail_port}>\n"
 print "\tuser_name : <#{$mail_username}>\n"
 print "\tenable_ssl: <#{$mail_enable_ssl}>\n\n"
-
 pop = Net::POP3.new($mail_server, $mail_port)
 pop.enable_ssl
 pop.start($mail_username, $mail_password) 
 
+
+# ------------------------------------------------------------------------------
+# Check for new mail.
+#
 if pop.mails.empty?
-  puts 'No mail.'
+  print "No mail.\n"
 else
+  print "Will process the '#{pop.n_mails}' emails:\n"
   pop.each_mail do |m| 
     mail = Mail.new(m.pop)
+    artifact = ''
     if mail.subject.downcase.start_with?("defect")
-      rally.create(:defect, :name => mail.subject, :description => mail.html_part.body)
+      artifact = :defect
+      ignore = mail.subject.slice!(0, 7)
+    elsif mail.subject.downcase.start_with?("story") || mail.subject.downcase.start_with?("userstory") ||  mail.subject.downcase.start_with?("hierarchical_requirement")
+      artifact = :story
+      ignore = mail.subject.slice!(0, 6)
+    elsif mail.subject.downcase.start_with?("userstory") ||  mail.subject.downcase.start_with?("hierarchical_requirement")
+      artifact = :story
+      ignore = mail.subject.slice!(0, 10)
+    elsif mail.subject.downcase.start_with?("hierarchical_requirement")
+      artifact = :story
+      ignore = mail.subject.slice!(0, 25)
+    elsif mail.subject.downcase.start_with?("hierarchicalrequirement")
+      artifact = :story
+      ignore = mail.subject.slice!(0, 24)
+    else
+      print "Skipping this email subject: #{mail.subject}\n"
     end
 
-    if mail.subject.downcase.start_with?("story") || mail.subject.downcase.start_with?("userstory") ||  mail.subject.downcase.start_with?("hierarchical_requirement")
-      rally.create(:story, :name => mail.subject, :description => mail.html_part.body)
+    if !artifact.empty?
+      print "Creating a Rally '#{artifact.to_s}', Subject: #{mail.subject}\n"
+      rally.create(artifact, :name => mail.subject, :description => mail.html_part.body)
+      print "Deleting the email...\n"
+      m.delete
     end
-    m.delete
   end
 end
 pop.finish
