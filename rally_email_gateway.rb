@@ -86,6 +86,20 @@ pop.start($mail_username, $mail_password)
 
 
 # ------------------------------------------------------------------------------
+# Should use something like this (not yet working).
+#
+            #User string                   #Rally artifact type
+actions = [ 'defect'                    => 'defect',
+            'story'                     => 'story',
+            'userstory'                 => 'story',
+            'hierarchicalrequirement'   => 'story',
+            'hierarchical_requirement'  => 'story',
+            'feature'                   => 'portfolioitem/feature',
+            'portfolioitem/feature'     => 'portfolioitem/feature',
+]
+
+
+# ------------------------------------------------------------------------------
 # Check for new mail.
 #
 if pop.mails.empty?
@@ -95,31 +109,41 @@ else
   pop.each_mail do |m| 
     mail = Mail.new(m.pop)
     artifact = ''
-    if mail.subject.downcase.start_with?("defect")
+    if mail.subject.downcase.start_with?('defect')
       artifact = :defect
       ignore = mail.subject.slice!(0, 7)
-    elsif mail.subject.downcase.start_with?("story") || mail.subject.downcase.start_with?("userstory") ||  mail.subject.downcase.start_with?("hierarchical_requirement")
+    elsif mail.subject.downcase.start_with?('story')
       artifact = :story
       ignore = mail.subject.slice!(0, 6)
-    elsif mail.subject.downcase.start_with?("userstory") ||  mail.subject.downcase.start_with?("hierarchical_requirement")
+    elsif mail.subject.downcase.start_with?('userstory')
       artifact = :story
       ignore = mail.subject.slice!(0, 10)
-    elsif mail.subject.downcase.start_with?("hierarchical_requirement")
+    elsif mail.subject.downcase.start_with?('hierarchical_requirement')
       artifact = :story
       ignore = mail.subject.slice!(0, 25)
-    elsif mail.subject.downcase.start_with?("hierarchicalrequirement")
+    elsif mail.subject.downcase.start_with?('hierarchicalrequirement')
       artifact = :story
       ignore = mail.subject.slice!(0, 24)
+    elsif mail.subject.downcase.start_with?('feature')
+      artifact = 'portfolioitem/feature'
+      ignore = mail.subject.slice!(0, 8)
+    elsif mail.subject.downcase.start_with?('portfolioitem/feature')
+      artifact = 'portfolioitem/feature'
+      ignore = mail.subject.slice!(0, 22)
     else
       print "Skipping this email subject: #{mail.subject}\n"
     end
 
     if !artifact.empty?
       print "Creating a Rally '#{artifact.to_s}', Subject: #{mail.subject}\n"
-      rally.create(artifact, :name => mail.subject, :description => mail.html_part.body)
-      print "Deleting the email...\n"
-      m.delete
+      begin
+        new_artifact = rally.create(artifact, :name => mail.subject, :description => mail.html_part.body)
+      rescue Exception => ex
+        print "ERROR: #{ex}\n"
+      end
     end
+    print "Deleting the email...\n"
+    m.delete
   end
 end
 pop.finish
