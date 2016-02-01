@@ -4,9 +4,7 @@ A Ruby script for creating a CA Agile Central (aka Rally) artifact using a POP3 
 ## Testing done
 1. Ruby 2.2.4
 1. Installed Ruby gems:
-   * ```
-   gem  install  mail  mime-types  rally_api  httpclient  mime-types-data
-   ```
+   * gem  install  mail  mime-types  rally_api  httpclient  mime-types-data
 
 ## Setup
 1. Create an email account to be used to process all incoming CA Agile Central (aka Rally) creation requests. For example, CAAgilerequest@domain.com
