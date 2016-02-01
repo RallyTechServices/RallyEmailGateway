@@ -119,7 +119,7 @@ else
   pop.each_mail do |m| 
     mail = Mail.new(m.pop)
     count = count + 1
-    print "Email #{count} of #{pop.n_mails}:\n"
+    print "Email #{count} of #{pop.n_mails}, from '#{mail.from}', date '#{mail.date}':\n"
     artifact_type = ''
     if mail.subject.downcase.start_with?('defect')
       artifact_type = 'defect'
@@ -154,6 +154,7 @@ else
       rescue Exception => ex
         print "ERROR: While attempting to create the CA Agile Central artifact. Message:\n"
         print "       #{ex}\n"
+        next
       end
     end
     print "    new '#{artifact_type}' created: FormattedID=#{new_artifact.FormattedID}  Date='#{new_artifact.CreationDate}'  Project='#{new_artifact.Project.name}'  Workspace='#{new_artifact.Workspace.name}'\n"
