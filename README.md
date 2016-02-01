@@ -1,21 +1,24 @@
-RallyEmailGateway
-=================
-README file for creating a Rally defect or story using a POP3 mail server
+# RallyEmailGateway
+A Ruby script for creating a CA Agile Central (aka Rally) artifact using a POP3 mail server.
 
-Tested with Ruby 2.2.4
-Install gems:
-    gem install mail mime-types rally_api httpclient mime-types-data
+## Testing done
+* Ruby 2.2.4
+* Install gems: gem install mail mime-types rally_api httpclient mime-types-data
 
-Create email account to be used to process all incoming Rally creation requests. For example, rallyrequest@domain.com.
+## Usage
+1. Create an email account to be used to process all incoming CA Agile Central (aka Rally) creation requests. For example, CAAgilerequest@domain.com.
 
-Setup the Ruby script on a server to run a service when an incoming mail is sent to the email account created above.
-For each email, the Ruby script will create an artifact of type:
-*   defect - email subjects starting with 'defect'
-*   story - email subjects starting with 'story' or 'userstory' or 'hierarchicalrequirement' or 'hierarchical_requirement'
-*   Otherwise, the email is ignored
+2. Setup the Ruby script on a server to run a service when an incoming mail is sent to the email account created above.
 
-It will be created in the user's default Project/Workspace.
+3. For each email, the Ruby script will create an artifact of type:
 
-Edit Ruby script with appropriate Rally settings and POP3 mail server settings.
+..* defect  - email subjects starting with 'defect'
+..* feature - email subjects starting with 'feature' or 'portfolioitem/feature'
+..* story   - email subjects starting with 'story' or 'userstory' or 'hierarchicalrequirement' or 'hierarchical_requirement'
+..* story   - if the email subject does not start with any of the above
 
-Create a cron job on a Unix/Mac server to run the script at a set interval or the equivalent for Windows.
+4. The CA Agile Central (aka Rally) artifact will be created in the user's default Project/Workspace.
+
+5. Edit the Ruby script with appropriate CA Agile Central (aka Rally) settings and POP3 mail server settings.
+
+6. Create a cron job on a Unix/Mac server to run the script at a set interval (or the equivalent for Windows system).
