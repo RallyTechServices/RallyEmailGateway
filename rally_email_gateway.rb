@@ -77,7 +77,6 @@ def connect_to_rally()
     print "ERROR: While attempting to connect to CA Agile Central. Message:\n"
     print "       #{ex}\n"
   end
-require 'byebug';byebug
   return @caac
 end
 
