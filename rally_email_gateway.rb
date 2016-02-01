@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 # ------------------------------------------------------------------------------
-# Rally login settings.
+# CA Agile Central login settings.
 #
-$rally_server    = 'https://rally1.rallydev.com/slm'
-$rally_username  = 'username@domain.com'
-$rally_password  = 'mypwd'
-$rally_version   = 'v2.0'
+$caac_server    = 'https://rally1.rallydev.com/slm'
+$caac_username  = 'username@domain.com'
+$caac_password  = 'mypwd'
+$caac_version   = 'v2.0'
 
 # ------------------------------------------------------------------------------
 # POP3 mail server settings
@@ -48,29 +48,38 @@ end
 
 
 # ------------------------------------------------------------------------------
-# Setup app information and connect to Rally.
+# Setup app information and connect to CA Agile Central.
 #
-custom_headers          = RallyAPI::CustomHttpHeader.new()
-custom_headers.name     = 'EMail-to-Rally'
-custom_headers.version  = '0.2'
-custom_headers.vendor   = 'Rally TechServices'
+@caac = nil
+def connect_to_rally()
+  custom_headers          = RallyAPI::CustomHttpHeader.new()
+  custom_headers.name     = 'EMail-to-CA-Agile-Central'
+  custom_headers.version  = '0.2'
+  custom_headers.vendor   = 'CA Agile Central TechServices'
 
-$rally_server << '/slm' if !$rally_server.end_with?('/slm')
+  $caac_server << '/slm' if !$caac_server.end_with?('/slm')
 
-print "Connecting to Rally with:\n"
-print "\tBaseURL  : <#{$rally_server}>\n"
-print "\tUserName : <#{$rally_username}>\n"
-print "\tVersion  : <#{$rally_version}>\n\n"
+  print "Connecting to CA Agile Central with:\n"
+  print "\tBaseURL  : <#{$caac_server}>\n"
+  print "\tUserName : <#{$caac_username}>\n"
+  print "\tVersion  : <#{$caac_version}>\n\n"
 
-config = {  :base_url   => $rally_server,
-            :username   => $rally_username,
-            :password   => $rally_password,
-            :version    => $rally_version,
-            :headers    => custom_headers
-}
+  config = {  :base_url   => $caac_server,
+              :username   => $caac_username,
+              :password   => $caac_password,
+              :version    => $caac_version,
+              :headers    => custom_headers
+  }
 
-rally = RallyAPI::RallyRestJson.new(config)
-
+  begin
+    @caac = RallyAPI::RallyRestJson.new(config)
+  rescue Exception => ex
+    print "ERROR: While attempting to connect to CA Agile Central. Message:\n"
+    print "       #{ex}\n"
+  end
+require 'byebug';byebug
+  return @caac
+end
 
 # ------------------------------------------------------------------------------
 # Connect to mail server via POP3 
@@ -88,7 +97,7 @@ pop.start($mail_username, $mail_password)
 # ------------------------------------------------------------------------------
 # Should use something like this (not yet working).
 #
-            #User string                   #Rally artifact type
+            #User string                   #CA Agile Central artifact type
 actions = [ 'defect'                    => 'defect',
             'story'                     => 'story',
             'userstory'                 => 'story',
@@ -105,44 +114,52 @@ actions = [ 'defect'                    => 'defect',
 if pop.mails.empty?
   print "No mail.\n"
 else
-  print "Will process the '#{pop.n_mails}' emails:\n"
+  @caac = connect_to_rally()
+  print "Will now process the '#{pop.n_mails}' emails:\n"
+  count = 0
   pop.each_mail do |m| 
     mail = Mail.new(m.pop)
-    artifact = ''
+    count = count + 1
+    print "Email #{count} of #{pop.n_mails}:\n"
+    artifact_type = ''
     if mail.subject.downcase.start_with?('defect')
-      artifact = :defect
+      artifact_type = 'defect'
       ignore = mail.subject.slice!(0, 7)
     elsif mail.subject.downcase.start_with?('story')
-      artifact = :story
+      artifact_type = 'story'
       ignore = mail.subject.slice!(0, 6)
     elsif mail.subject.downcase.start_with?('userstory')
-      artifact = :story
+      artifact_type = 'story'
       ignore = mail.subject.slice!(0, 10)
     elsif mail.subject.downcase.start_with?('hierarchical_requirement')
-      artifact = :story
+      artifact_type = 'story'
       ignore = mail.subject.slice!(0, 25)
     elsif mail.subject.downcase.start_with?('hierarchicalrequirement')
-      artifact = :story
+      artifact_type = 'story'
       ignore = mail.subject.slice!(0, 24)
     elsif mail.subject.downcase.start_with?('feature')
-      artifact = 'portfolioitem/feature'
+      artifact_type = 'portfolioitem/feature'
       ignore = mail.subject.slice!(0, 8)
     elsif mail.subject.downcase.start_with?('portfolioitem/feature')
-      artifact = 'portfolioitem/feature'
+      artifact_type = 'portfolioitem/feature'
       ignore = mail.subject.slice!(0, 22)
     else
-      print "Skipping this email subject: #{mail.subject}\n"
+      # Default artifact type is Story
+      artifact_type = 'story'
     end
 
-    if !artifact.empty?
-      print "Creating a Rally '#{artifact.to_s}', Subject: #{mail.subject}\n"
+    if !artifact_type.empty?
+      print "    creating a CA Agile Central '#{artifact_type}', Name: #{mail.subject}\n"
       begin
-        new_artifact = rally.create(artifact, :name => mail.subject, :description => mail.html_part.body)
+        new_artifact = @caac.create(artifact_type, :name => mail.subject, :description => mail.html_part.body)
       rescue Exception => ex
-        print "ERROR: #{ex}\n"
+        print "ERROR: While attempting to create the CA Agile Central artifact. Message:\n"
+        print "       #{ex}\n"
       end
     end
-    print "Deleting the email...\n"
+    print "    new '#{artifact_type}' created: FormattedID=#{new_artifact.FormattedID}  Date='#{new_artifact.CreationDate}'  Project='#{new_artifact.Project.name}'  Workspace='#{new_artifact.Workspace.name}'\n"
+
+    print "    now deleting the email.\n"
     m.delete
   end
 end
