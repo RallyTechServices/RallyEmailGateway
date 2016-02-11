@@ -11,11 +11,12 @@ $caac_version   = 'v2.0'
 # ------------------------------------------------------------------------------
 # POP3 mail server settings
 #
-$mail_server     = 'pop.rallyemailgateway.mailinator.com'
-$mail_port       = '995'
-$mail_username   = 'rallyemailgateway'
-$mail_password   = ''
-$mail_enable_ssl = true
+$mail_server        = 'pop.rallyemailgateway.mailinator.com'
+$mail_port          = '995'
+$mail_username      = 'rallyemailgateway'
+$mail_password      = ''
+$mail_enable_ssl    = true
+$mail_debug_output  = false # Security warning: causes password to echo to screen
 
 
 # ------------------------------------------------------------------------------
@@ -43,7 +44,7 @@ if FileTest.exist?( my_vars )
   print "Sourcing '#{my_vars}'...\n\n"
   require my_vars
 else
-  print "File #{my_vars} not found; skipping require...\n\n"
+  print "Skipping optional require of '#{my_vars}' file...\n\n"
 end
 
 
@@ -89,11 +90,8 @@ print "\tport      : <#{$mail_port}>\n"
 print "\tuser_name : <#{$mail_username}>\n"
 print "\tenable_ssl: <#{$mail_enable_ssl}>\n\n"
 pop = Net::POP3.new($mail_server, $mail_port)
-if $mail_enable_ssl
-  pop.enable_ssl(OpenSSL::SSL::VERIFY_NONE)
-else
-  pop.disable_ssl
-end
+pop.enable_ssl(OpenSSL::SSL::VERIFY_NONE)   if $mail_enable_ssl
+pop.set_debug_output $stdout                if $mail_debug_output
 pop.start($mail_username, $mail_password) 
 
 
