@@ -85,10 +85,11 @@ end
 # Connect to mail server via POP3 
 #
 print "Connecting to POP3 email with:\n"
-print "\taddress   : <#{$mail_server}>\n"
-print "\tport      : <#{$mail_port}>\n"
-print "\tuser_name : <#{$mail_username}>\n"
-print "\tenable_ssl: <#{$mail_enable_ssl}>\n\n"
+print "\taddress     : <#{$mail_server}>\n"
+print "\tport        : <#{$mail_port}>\n"
+print "\tuser_name   : <#{$mail_username}>\n"
+print "\tenable_ssl  : <#{$mail_enable_ssl}>\n"
+print "\tdebug_output: <#{$mail_debug_output}>\n\n"
 pop = Net::POP3.new($mail_server, $mail_port)
 pop.enable_ssl(OpenSSL::SSL::VERIFY_NONE)   if $mail_enable_ssl
 pop.set_debug_output $stdout                if $mail_debug_output
@@ -123,43 +124,59 @@ else
     count = count + 1
     print "Email #{count} of #{pop.n_mails}, from '#{mail.from}', date '#{mail.date}':\n"
     artifact_type = ''
-    if mail.subject.downcase.start_with?('defect')
-      artifact_type = 'defect'
-      ignore = mail.subject.slice!(0, 7)
-    elsif mail.subject.downcase.start_with?('story')
-      artifact_type = 'story'
-      ignore = mail.subject.slice!(0, 6)
-    elsif mail.subject.downcase.start_with?('userstory')
-      artifact_type = 'story'
-      ignore = mail.subject.slice!(0, 10)
-    elsif mail.subject.downcase.start_with?('hierarchical_requirement')
-      artifact_type = 'story'
-      ignore = mail.subject.slice!(0, 25)
-    elsif mail.subject.downcase.start_with?('hierarchicalrequirement')
-      artifact_type = 'story'
-      ignore = mail.subject.slice!(0, 24)
-    elsif mail.subject.downcase.start_with?('feature')
-      artifact_type = 'portfolioitem/feature'
-      ignore = mail.subject.slice!(0, 8)
-    elsif mail.subject.downcase.start_with?('portfolioitem/feature')
-      artifact_type = 'portfolioitem/feature'
-      ignore = mail.subject.slice!(0, 22)
-    else
-      # Default artifact type is Story
-      artifact_type = 'story'
+
+    if !mail.subject.nil?
+      if mail.subject.downcase.start_with?('defect')
+        artifact_type = 'defect'
+        ignore = mail.subject.slice!(0, 7)
+      elsif mail.subject.downcase.start_with?('story')
+        artifact_type = 'story'
+        ignore = mail.subject.slice!(0, 6)
+      elsif mail.subject.downcase.start_with?('userstory')
+        artifact_type = 'story'
+        ignore = mail.subject.slice!(0, 10)
+      elsif mail.subject.downcase.start_with?('hierarchical_requirement')
+        artifact_type = 'story'
+        ignore = mail.subject.slice!(0, 25)
+      elsif mail.subject.downcase.start_with?('hierarchicalrequirement')
+        artifact_type = 'story'
+        ignore = mail.subject.slice!(0, 24)
+      elsif mail.subject.downcase.start_with?('feature')
+        artifact_type = 'portfolioitem/feature'
+        ignore = mail.subject.slice!(0, 8)
+      elsif mail.subject.downcase.start_with?('portfolioitem/feature')
+        artifact_type = 'portfolioitem/feature'
+        ignore = mail.subject.slice!(0, 22)
+      else
+        # Default artifact type is Story
+        artifact_type = 'story'
+      end
     end
 
     if !artifact_type.empty?
+      mail.subject.strip!
       print "    creating a CA Agile Central '#{artifact_type}', Name: #{mail.subject}\n"
       begin
+        fields = {}
+        fields['Name'] = mail.subject
+        if !mail.html_part.body.nil?
+          fields['Description'] = mail.html_part.body
+        end
         new_artifact = @caac.create(artifact_type, :name => mail.subject, :description => mail.html_part.body)
       rescue Exception => ex
         print "ERROR: While attempting to create the CA Agile Central artifact. Message:\n"
         print "       #{ex}\n"
         next
       end
+      print "    new '#{artifact_type}' created:"
+      print "  FormattedID='#{new_artifact.FormattedID}'"
+      print "  Date='#{new_artifact.CreationDate}'"
+      print "  Project='#{new_artifact.Project.name}'"
+      print "  Workspace='#{new_artifact.Workspace.name}'"
+      print "\n"
+    else
+      print "    email subject is empty; nothing to create\n"
     end
-    print "    new '#{artifact_type}' created: FormattedID=#{new_artifact.FormattedID}  Date='#{new_artifact.CreationDate}'  Project='#{new_artifact.Project.name}'  Workspace='#{new_artifact.Workspace.name}'\n"
 
     print "    now deleting the email.\n"
     m.delete
