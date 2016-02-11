@@ -89,7 +89,11 @@ print "\tport      : <#{$mail_port}>\n"
 print "\tuser_name : <#{$mail_username}>\n"
 print "\tenable_ssl: <#{$mail_enable_ssl}>\n\n"
 pop = Net::POP3.new($mail_server, $mail_port)
-pop.enable_ssl
+if $mail_enable_ssl
+  pop.enable_ssl(OpenSSL::SSL::VERIFY_NONE)
+else
+  pop.disable_ssl
+end
 pop.start($mail_username, $mail_password) 
 
 
