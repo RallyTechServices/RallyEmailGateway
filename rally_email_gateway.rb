@@ -158,11 +158,11 @@ else
       print "    creating a CA Agile Central '#{artifact_type}', Name: #{mail.subject}\n"
       begin
         fields = {}
-        fields['Name'] = mail.subject
+        fields['Name'] = mail.subject[0..255]
         if !mail.html_part.body.nil?
-          fields['Description'] = mail.html_part.body
+          fields['Description'] = mail.html_part.body.raw_source[0..32767]
         end
-        new_artifact = @caac.create(artifact_type, :name => mail.subject, :description => mail.html_part.body)
+        new_artifact = @caac.create(artifact_type, fields)
       rescue Exception => ex
         print "ERROR: While attempting to create the CA Agile Central artifact. Message:\n"
         print "       #{ex}\n"
