@@ -20,7 +20,7 @@ A Ruby script for creating a CA Agile Central (aka Rally) artifact using a POP3 
    * story   - if the email subject does not start with any of the above keywords
 1. The above keywords are case-insensitive
 1. The CA Agile Central (aka Rally) artifact will be created in the user's default Workspace and Project
-1. The artifact will created as follows:
+1. The artifact will be created as follows:
    * The ```Name``` will be composed of the Email Subject with any leading keyword (above) removed
    * The ```Description``` will be composed of the Email Body
 1. The Email will be deleted (via POP3) when the artifact is created
